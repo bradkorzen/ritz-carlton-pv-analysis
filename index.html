@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritz-Carlton Paradise Valley | Investment Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --gold: #C5A572;
+            --gold-light: #D4BA8A;
+            --dark: #1A1A2E;
+            --darker: #12121F;
+            --card: #1E1E32;
+            --card-hover: #252542;
+            --text: #E8E8F0;
+            --text-muted: #9999AA;
+            --green: #4CAF50;
+            --red: #EF5350;
+            --blue: #42A5F5;
+            --orange: #FFA726;
+            --purple: #AB47BC;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--dark) 0%, #0D0D1A 100%);
+            border-bottom: 2px solid var(--gold);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            color: var(--gold);
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header .confidential {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 4px 16px;
+            border: 1px solid var(--red);
+            color: var(--red);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            background: var(--dark);
+            border-bottom: 1px solid rgba(197,165,114,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0;
+        }
+
+        .nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            background: rgba(197,165,114,0.05);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 60px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(197,165,114,0.3);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; }
+
+        @media (max-width: 900px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(197,165,114,0.15);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(197,165,114,0.4);
+            background: var(--card-hover);
+        }
+
+        .metric-card {
+            text-align: center;
+        }
+
+        .metric-card .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .metric-card .sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(197,165,114,0.1);
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(197,165,114,0.2);
+        }
+
+        td {
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        tr:hover td { background: rgba(197,165,114,0.03); }
+
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-gold { color: var(--gold); }
+        .text-green { color: var(--green); }
+        .text-red { color: var(--red); }
+        .text-blue { color: var(--blue); }
+        .text-muted { color: var(--text-muted); }
+        .font-bold { font-weight: 600; }
+
+        .highlight-row td {
+            background: rgba(197,165,114,0.08) !important;
+            font-weight: 600;
+            border-top: 1px solid rgba(197,165,114,0.2);
+        }
+
+        /* Sensitivity Controls */
+        .controls-panel {
+            background: var(--card);
+            border: 1px solid rgba(197,165,114,0.2);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group:last-child { margin-bottom: 0; }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .control-label span:first-child {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(197,165,114,0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .scenario-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-btn {
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            background: transparent;
+            border: 1px solid rgba(197,165,114,0.3);
+            color: var(--text-muted);
+        }
+
+        .scenario-btn:hover, .scenario-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(197,165,114,0.1);
+        }
+
+        .scenario-btn.bear { border-color: var(--red); color: var(--red); }
+        .scenario-btn.bear:hover, .scenario-btn.bear.active { background: rgba(239,83,80,0.1); }
+        .scenario-btn.base { border-color: var(--blue); color: var(--blue); }
+        .scenario-btn.base:hover, .scenario-btn.base.active { background: rgba(66,165,245,0.1); }
+        .scenario-btn.bull { border-color: var(--green); color: var(--green); }
+        .scenario-btn.bull:hover, .scenario-btn.bull.active { background: rgba(76,175,80,0.1); }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: rgba(197,165,114,0.05);
+            border: 1px solid rgba(197,165,114,0.15);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .result-card .result-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-card .result-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0.25rem 0;
+        }
+
+        .result-card .result-delta {
+            font-size: 0.75rem;
+        }
+
+        .chart-container {
+            background: var(--card);
+            border: 1px solid rgba(197,165,114,0.15);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container h3 {
+            font-size: 0.9rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .risk-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            border-left: 3px solid;
+        }
+
+        .risk-high { border-color: var(--red); background: rgba(239,83,80,0.05); }
+        .risk-medium { border-color: var(--orange); background: rgba(255,167,38,0.05); }
+        .risk-low { border-color: var(--green); background: rgba(76,175,80,0.05); }
+
+        .risk-item .risk-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .risk-item .risk-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .badge-red { background: rgba(239,83,80,0.2); color: var(--red); }
+        .badge-orange { background: rgba(255,167,38,0.2); color: var(--orange); }
+        .badge-green { background: rgba(76,175,80,0.2); color: var(--green); }
+        .badge-blue { background: rgba(66,165,245,0.2); color: var(--blue); }
+
+        .waterfall-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .waterfall-label {
+            width: 200px;
+            font-size: 0.85rem;
+            text-align: right;
+            padding-right: 1rem;
+            color: var(--text-muted);
+        }
+
+        .waterfall-track {
+            flex: 1;
+            height: 28px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waterfall-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: width 0.5s ease;
+        }
+
+        .sensitivity-table {
+            overflow-x: auto;
+        }
+
+        .sensitivity-table table td, .sensitivity-table table th {
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .sensitivity-table .highlight-cell {
+            background: rgba(197,165,114,0.15);
+            border: 1px solid var(--gold);
+        }
+
+        .print-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1000px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(197,165,114,0.2);
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .comparison-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .comparison-row .comp-label { width: 140px; font-size: 0.8rem; color: var(--text-muted); }
+        .comparison-row .comp-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .comparison-row .comp-bar-fill { height: 100%; border-radius: 4px; background: var(--gold); transition: width 0.5s; }
+        .comparison-row .comp-value { width: 80px; text-align: right; font-size: 0.85rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>The Ritz-Carlton Resort</h1>
+    <div class="subtitle">Paradise Valley, Arizona &mdash; Equity Investment Analysis</div>
+    <div class="confidential">Confidential &mdash; March 2026</div>
+</div>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#deal-structure">Deal Structure</a>
+        <a href="#financials">Financials</a>
+        <a href="#sensitivity">Sensitivity Tool</a>
+        <a href="#scenarios">Scenario Analysis</a>
+        <a href="#risk">Risk Assessment</a>
+        <a href="#comps">Market Comps</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- OVERVIEW -->
+    <section id="overview">
+        <h2 class="section-title">Investment Overview</h2>
+
+        <div class="grid-4" style="margin-bottom: 2rem;">
+            <div class="card metric-card">
+                <div class="label">Total Investment</div>
+                <div class="value">$700M</div>
+                <div class="sub">100% Equity</div>
+            </div>
+            <div class="card metric-card">
+                <div class="label">Projected Total Return</div>
+                <div class="value text-green" style="color: var(--green);">$1.47B</div>
+                <div class="sub">2.10x Multiple</div>
+            </div>
+            <div class="card metric-card">
+                <div class="label">Stabilized NOI</div>
+                <div class="value">$53M</div>
+                <div class="sub">60.2% NOI Margin</div>
+            </div>
+            <div class="card metric-card">
+                <div class="label">Exit Cap Rate</div>
+                <div class="value">7.0%</div>
+                <div class="sub">$757M Implied Value</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Property Summary</h3>
+                <table>
+                    <tr><td class="text-muted">Property</td><td class="text-right">Ritz-Carlton Resort Paradise Valley</td></tr>
+                    <tr><td class="text-muted">Location</td><td class="text-right">Paradise Valley, Arizona</td></tr>
+                    <tr><td class="text-muted">Hotel Keys</td><td class="text-right">215 Keys</td></tr>
+                    <tr><td class="text-muted">Brand</td><td class="text-right">Ritz-Carlton (Marriott)</td></tr>
+                    <tr><td class="text-muted">Segment</td><td class="text-right">Ultra-Luxury Resort</td></tr>
+                    <tr><td class="text-muted">Condo Villas</td><td class="text-right">80 Units (35 closed, 45 remaining)</td></tr>
+                    <tr><td class="text-muted">Estate Lots</td><td class="text-right">32 Lots (22 remaining)</td></tr>
+                    <tr><td class="text-muted">Future Dev.</td><td class="text-right">30 Acres (The Palmeraie)</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Investment Thesis</h3>
+                <table>
+                    <tr><td class="text-muted">Strategy</td><td class="text-right">Ch. 11 Section 363 Acquisition</td></tr>
+                    <tr><td class="text-muted">Sponsor</td><td class="text-right">The McBride Cohen Company</td></tr>
+                    <tr><td class="text-muted">Original Loan</td><td class="text-right">$585M (Madison Realty Capital)</td></tr>
+                    <tr><td class="text-muted">Acquisition Type</td><td class="text-right">Lien-Free Purchase</td></tr>
+                    <tr><td class="text-muted">Construction Status</td><td class="text-right">Stalled &mdash; Completion Required</td></tr>
+                    <tr><td class="text-muted">Hold Strategy</td><td class="text-right">Long-Term Operating Hold</td></tr>
+                    <tr><td class="text-muted">Perm. Financing</td><td class="text-right">~$400M at Stabilization</td></tr>
+                    <tr><td class="text-muted">Phase 2</td><td class="text-right">Palmeraie Mixed-Use (50% JV)</td></tr>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEAL STRUCTURE -->
+    <section id="deal-structure">
+        <h2 class="section-title">Deal Structure &amp; Sources / Uses</h2>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Sources of Funds</h3>
+                <table>
+                    <thead><tr><th>Source</th><th class="text-right">Amount ($M)</th><th class="text-right">%</th></tr></thead>
+                    <tbody>
+                        <tr class="highlight-row"><td>Equity Fund Investment</td><td class="text-right font-bold">$700.0</td><td class="text-right">100%</td></tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(239,83,80,0.08); border-radius: 4px; font-size: 0.8rem;">
+                    <span class="badge badge-red">Note</span> &nbsp; 100% equity structure &mdash; no leverage at acquisition. High risk concentration in single check.
+                </div>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Uses of Funds</h3>
+                <table>
+                    <thead><tr><th>Use</th><th class="text-right">Amount ($M)</th><th class="text-right">%</th></tr></thead>
+                    <tbody>
+                        <tr><td>Ch. 11 Buyout &amp; Creditor Repayment</td><td class="text-right">$500.0</td><td class="text-right">71.4%</td></tr>
+                        <tr><td>Construction, FF&amp;E, Legal &amp; Costs</td><td class="text-right">$185.0</td><td class="text-right">26.4%</td></tr>
+                        <tr><td>Working Capital &amp; Pre-Opening</td><td class="text-right">$15.0</td><td class="text-right">2.1%</td></tr>
+                        <tr class="highlight-row"><td>Total Uses</td><td class="text-right font-bold">$700.0</td><td class="text-right">100%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Capital Return Waterfall</h3>
+            <div id="waterfall-chart" style="height: 350px;"><canvas id="waterfallCanvas"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Projected Return Sources</h3>
+            <table>
+                <thead>
+                    <tr><th>Return Source</th><th class="text-right">Amount ($M)</th><th class="text-right">% of Total</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Condo Villas &mdash; Cash on Hand</td><td class="text-right">$120.0</td><td class="text-right">8.2%</td><td class="text-muted">35 units closed, funds in court registry</td></tr>
+                    <tr><td>Condo Villas &mdash; Sales to Come</td><td class="text-right">$180.0</td><td class="text-right">12.3%</td><td class="text-muted">45 remaining units under contract</td></tr>
+                    <tr><td>Estate Home Lots</td><td class="text-right">$110.0</td><td class="text-right">7.5%</td><td class="text-muted">22 remaining SFR lots</td></tr>
+                    <tr><td>Hotel Perm. Financing + Equity</td><td class="text-right">$757.0</td><td class="text-right">51.6%</td><td class="text-muted">$400M debt + $357M equity value</td></tr>
+                    <tr><td>Palmeraie Land Value (Phase 2)</td><td class="text-right">$300.0</td><td class="text-right">20.4%</td><td class="text-muted">30 acres mixed-use development</td></tr>
+                    <tr class="highlight-row"><td>Total Projected Returns</td><td class="text-right font-bold text-gold">$1,467.0</td><td class="text-right">100%</td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FINANCIALS -->
+    <section id="financials">
+        <h2 class="section-title">Hotel Financial Projections (Stabilized Year 1)</h2>
+
+        <div class="grid-3" style="margin-bottom: 2rem;">
+            <div class="card metric-card">
+                <div class="label">Average Daily Rate</div>
+                <div class="value">$950</div>
+                <div class="sub">Ultra-luxury positioning</div>
+            </div>
+            <div class="card metric-card">
+                <div class="label">Occupancy Rate</div>
+                <div class="value">70.0%</div>
+                <div class="sub">215 keys</div>
+            </div>
+            <div class="card metric-card">
+                <div class="label">RevPAR</div>
+                <div class="value">$665</div>
+                <div class="sub">ADR x Occupancy</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Income Statement (Stabilized)</h3>
+                <table>
+                    <thead><tr><th>Revenue Stream</th><th class="text-right">Annual ($M)</th><th class="text-right">Monthly ($M)</th><th class="text-right">% Rev</th></tr></thead>
+                    <tbody>
+                        <tr><td>Room Revenue</td><td class="text-right">$52.0</td><td class="text-right">$4.3</td><td class="text-right">59.1%</td></tr>
+                        <tr><td>Food &amp; Beverage</td><td class="text-right">$24.0</td><td class="text-right">$2.0</td><td class="text-right">27.3%</td></tr>
+                        <tr><td>Event Space</td><td class="text-right">$12.0</td><td class="text-right">$1.0</td><td class="text-right">13.6%</td></tr>
+                        <tr class="highlight-row"><td>Gross Revenue</td><td class="text-right font-bold">$88.0</td><td class="text-right">$7.3</td><td class="text-right">100%</td></tr>
+                        <tr><td class="text-red">Operating Expenses</td><td class="text-right text-red">($35.0)</td><td class="text-right text-red">($2.9)</td><td class="text-right">39.8%</td></tr>
+                        <tr class="highlight-row"><td>Net Operating Income</td><td class="text-right font-bold text-green">$53.0</td><td class="text-right text-green">$4.4</td><td class="text-right">60.2%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Key Operating Metrics</h3>
+                <table>
+                    <tbody>
+                        <tr><td class="text-muted">Revenue per Key</td><td class="text-right">$409,302</td></tr>
+                        <tr><td class="text-muted">NOI per Key</td><td class="text-right">$246,512</td></tr>
+                        <tr><td class="text-muted">OpEx Ratio</td><td class="text-right">39.8%</td></tr>
+                        <tr><td class="text-muted">NOI Margin</td><td class="text-right">60.2%</td></tr>
+                        <tr><td class="text-muted">Implied Value @ 7% Cap</td><td class="text-right">$757.1M</td></tr>
+                        <tr><td class="text-muted">Value per Key</td><td class="text-right">$3,521,581</td></tr>
+                        <tr><td class="text-muted">Yield on Cost ($700M)</td><td class="text-right">7.6%</td></tr>
+                        <tr><td class="text-muted">Permanent Debt (Projected)</td><td class="text-right">$400M</td></tr>
+                        <tr><td class="text-muted">Debt Yield</td><td class="text-right">13.3%</td></tr>
+                        <tr><td class="text-muted">DSCR (est. 5.5%, 30yr)</td><td class="text-right">1.93x</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 1.5rem;">
+            <div class="chart-container">
+                <h3>Revenue Composition</h3>
+                <canvas id="revenueChart" height="250"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Return Sources Breakdown</h3>
+                <canvas id="returnSourcesChart" height="250"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- SENSITIVITY TOOL -->
+    <section id="sensitivity">
+        <h2 class="section-title">Interactive Sensitivity Analysis</h2>
+
+        <div class="scenario-btns">
+            <button class="scenario-btn bear" onclick="setScenario('bear')">Bear Case</button>
+            <button class="scenario-btn base active" onclick="setScenario('base')">Base Case (Memo)</button>
+            <button class="scenario-btn bull" onclick="setScenario('bull')">Bull Case</button>
+            <button class="reset-btn" onclick="setScenario('base')" style="margin-left: auto;">Reset to Base</button>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <div class="controls-panel">
+                    <h3 style="color: var(--gold); margin-bottom: 1.5rem; font-weight: 400;">Adjust Assumptions</h3>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Average Daily Rate (ADR)</span>
+                            <span class="control-value" id="adr-val">$950</span>
+                        </div>
+                        <input type="range" id="adr" min="600" max="1500" value="950" step="25" oninput="updateModel()">
+                        <div class="range-labels"><span>$600</span><span>$1,500</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Occupancy Rate</span>
+                            <span class="control-value" id="occ-val">70%</span>
+                        </div>
+                        <input type="range" id="occ" min="40" max="90" value="70" step="1" oninput="updateModel()">
+                        <div class="range-labels"><span>40%</span><span>90%</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Exit Cap Rate</span>
+                            <span class="control-value" id="cap-val">7.0%</span>
+                        </div>
+                        <input type="range" id="cap" min="4" max="10" value="7.0" step="0.25" oninput="updateModel()">
+                        <div class="range-labels"><span>4.0%</span><span>10.0%</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>OpEx Ratio (% of Revenue)</span>
+                            <span class="control-value" id="opex-val">39.8%</span>
+                        </div>
+                        <input type="range" id="opex" min="30" max="55" value="39.8" step="0.5" oninput="updateModel()">
+                        <div class="range-labels"><span>30%</span><span>55%</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>F&amp;B Revenue ($M/yr)</span>
+                            <span class="control-value" id="fb-val">$24M</span>
+                        </div>
+                        <input type="range" id="fb" min="12" max="40" value="24" step="1" oninput="updateModel()">
+                        <div class="range-labels"><span>$12M</span><span>$40M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Event Revenue ($M/yr)</span>
+                            <span class="control-value" id="event-val">$12M</span>
+                        </div>
+                        <input type="range" id="event" min="4" max="24" value="12" step="1" oninput="updateModel()">
+                        <div class="range-labels"><span>$4M</span><span>$24M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>All-In Cost ($M)</span>
+                            <span class="control-value" id="cost-val">$700M</span>
+                        </div>
+                        <input type="range" id="cost" min="600" max="900" value="700" step="10" oninput="updateModel()">
+                        <div class="range-labels"><span>$600M</span><span>$900M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Villa Sales Proceeds ($M)</span>
+                            <span class="control-value" id="villa-val">$300M</span>
+                        </div>
+                        <input type="range" id="villa" min="150" max="400" value="300" step="10" oninput="updateModel()">
+                        <div class="range-labels"><span>$150M</span><span>$400M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Estate Lot Proceeds ($M)</span>
+                            <span class="control-value" id="estate-val">$110M</span>
+                        </div>
+                        <input type="range" id="estate" min="50" max="180" value="110" step="5" oninput="updateModel()">
+                        <div class="range-labels"><span>$50M</span><span>$180M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Palmeraie Land Value ($M)</span>
+                            <span class="control-value" id="palm-val">$300M</span>
+                        </div>
+                        <input type="range" id="palm" min="100" max="500" value="300" step="10" oninput="updateModel()">
+                        <div class="range-labels"><span>$100M</span><span>$500M</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Perm. Loan Rate</span>
+                            <span class="control-value" id="rate-val">5.50%</span>
+                        </div>
+                        <input type="range" id="rate" min="4" max="8" value="5.5" step="0.25" oninput="updateModel()">
+                        <div class="range-labels"><span>4.0%</span><span>8.0%</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Perm. Loan Amount ($M)</span>
+                            <span class="control-value" id="loan-val">$400M</span>
+                        </div>
+                        <input type="range" id="loan" min="200" max="600" value="400" step="10" oninput="updateModel()">
+                        <div class="range-labels"><span>$200M</span><span>$600M</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Dynamic Results -->
+                <div class="results-grid" id="results-grid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="chart-container">
+                    <h3>NOI & Valuation Impact</h3>
+                    <canvas id="sensitivityChart" height="300"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Return Waterfall (Dynamic)</h3>
+                    <canvas id="waterfallDynamic" height="300"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Cash-on-Cash & Yield Metrics</h3>
+                    <canvas id="yieldsChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCENARIO ANALYSIS -->
+    <section id="scenarios">
+        <h2 class="section-title">Scenario Comparison Matrix</h2>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="sensitivity-table">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Hotel Valuation: ADR vs. Occupancy (Cap Rate = <span id="matrix-cap">7.0%</span>)</h3>
+                <table id="adr-occ-matrix">
+                    <!-- Built by JS -->
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="sensitivity-table">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Hotel Valuation: Cap Rate vs. NOI ($M)</h3>
+                <table id="cap-noi-matrix">
+                    <!-- Built by JS -->
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="sensitivity-table">
+                <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Equity Multiple: Total Cost vs. Total Return ($M)</h3>
+                <table id="cost-return-matrix">
+                    <!-- Built by JS -->
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Three-Scenario Summary</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th class="text-center text-red">Bear Case</th>
+                        <th class="text-center text-blue">Base Case</th>
+                        <th class="text-center text-green">Bull Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>ADR</td><td class="text-center">$750</td><td class="text-center">$950</td><td class="text-center">$1,200</td></tr>
+                    <tr><td>Occupancy</td><td class="text-center">55%</td><td class="text-center">70%</td><td class="text-center">80%</td></tr>
+                    <tr><td>Room Revenue</td><td class="text-center">$32.4M</td><td class="text-center">$52.0M</td><td class="text-center">$75.2M</td></tr>
+                    <tr><td>Gross Revenue</td><td class="text-center">$56.4M</td><td class="text-center">$88.0M</td><td class="text-center">$117.2M</td></tr>
+                    <tr><td>OpEx Ratio</td><td class="text-center">45%</td><td class="text-center">39.8%</td><td class="text-center">36%</td></tr>
+                    <tr><td>NOI</td><td class="text-center">$31.0M</td><td class="text-center">$53.0M</td><td class="text-center">$75.0M</td></tr>
+                    <tr><td>Cap Rate</td><td class="text-center">8.0%</td><td class="text-center">7.0%</td><td class="text-center">5.5%</td></tr>
+                    <tr><td>Hotel Valuation</td><td class="text-center text-red">$387.5M</td><td class="text-center text-blue">$757.1M</td><td class="text-center text-green">$1,363.6M</td></tr>
+                    <tr><td>Villa + Estate Sales</td><td class="text-center">$300M</td><td class="text-center">$410M</td><td class="text-center">$450M</td></tr>
+                    <tr><td>Palmeraie Value</td><td class="text-center">$150M</td><td class="text-center">$300M</td><td class="text-center">$400M</td></tr>
+                    <tr class="highlight-row"><td>Total Return</td><td class="text-center text-red">$837.5M</td><td class="text-center text-blue">$1,467.1M</td><td class="text-center text-green">$2,213.6M</td></tr>
+                    <tr class="highlight-row"><td>Equity Multiple</td><td class="text-center text-red">1.20x</td><td class="text-center text-blue">2.10x</td><td class="text-center text-green">3.16x</td></tr>
+                    <tr class="highlight-row"><td>Profit / (Loss)</td><td class="text-center text-red">$137.5M</td><td class="text-center text-blue">$767.1M</td><td class="text-center text-green">$1,513.6M</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- RISK ASSESSMENT -->
+    <section id="risk">
+        <h2 class="section-title">Risk Assessment</h2>
+
+        <div class="grid-2">
+            <div>
+                <div class="risk-item risk-high">
+                    <div class="risk-title"><span class="badge badge-red">High</span> &nbsp; Chapter 11 Execution Risk</div>
+                    <div class="risk-desc">Section 363 sale requires court approval, creditor agreement, and potential competing bids. Timeline uncertainty could extend capital deployment period and increase costs. Unsecured creditor claims are still being negotiated.</div>
+                </div>
+                <div class="risk-item risk-high">
+                    <div class="risk-title"><span class="badge badge-red">High</span> &nbsp; Capital Concentration Risk</div>
+                    <div class="risk-desc">$700M all-equity single-asset investment with no leverage diversification. Complete loss of capital is possible if project fundamentals deteriorate materially. No institutional co-investment disclosed.</div>
+                </div>
+                <div class="risk-item risk-high">
+                    <div class="risk-title"><span class="badge badge-red">High</span> &nbsp; Construction Completion Risk</div>
+                    <div class="risk-desc">Project is currently stalled. $185M budget for completion, FF&E, and legal may face cost overruns given inflationary pressures and contractor re-mobilization challenges. No GMP or completion guarantee mentioned.</div>
+                </div>
+                <div class="risk-item risk-medium">
+                    <div class="risk-title"><span class="badge badge-orange">Medium</span> &nbsp; Residential Sales Execution</div>
+                    <div class="risk-desc">$290M in projected villa and estate lot sales rely on 45 condo contracts closing post-bankruptcy and 22 estate lots selling. Buyer confidence may be impacted by bankruptcy proceedings. Contract enforceability risk exists.</div>
+                </div>
+            </div>
+            <div>
+                <div class="risk-item risk-medium">
+                    <div class="risk-title"><span class="badge badge-orange">Medium</span> &nbsp; Stabilization Timeline</div>
+                    <div class="risk-desc">NOI projections assume stabilized Year 1 at 70% occupancy. Luxury resorts typically require 2-3 years to stabilize. Negative carry during ramp-up not modeled in the memo. Pre-opening costs only $15M budgeted.</div>
+                </div>
+                <div class="risk-item risk-medium">
+                    <div class="risk-title"><span class="badge badge-orange">Medium</span> &nbsp; Permanent Financing Risk</div>
+                    <div class="risk-desc">Return thesis depends on securing $400M permanent mortgage. Interest rate environment, hotel operating performance, and lender appetite for single-asset hotel loans create refinancing uncertainty.</div>
+                </div>
+                <div class="risk-item risk-medium">
+                    <div class="risk-title"><span class="badge badge-orange">Medium</span> &nbsp; Market / Macro Risk</div>
+                    <div class="risk-desc">Arizona luxury resort market sensitive to economic cycles. Paradise Valley is a seasonal market with summer demand challenges. Competition from Scottsdale luxury supply (Four Seasons, Andaz, etc.).</div>
+                </div>
+                <div class="risk-item risk-low">
+                    <div class="risk-title"><span class="badge badge-green">Low</span> &nbsp; Brand / Management Risk</div>
+                    <div class="risk-desc">Ritz-Carlton brand provides strong distribution, loyalty program access, and operational standards. However, management fees (typically 3-5% of revenue + incentive) are not detailed in the memo and would impact NOI.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Critical Diligence Items</h3>
+            <table>
+                <thead><tr><th>#</th><th>Item</th><th>Priority</th><th>Notes</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Detailed construction budget & GMP status</td><td><span class="badge badge-red">Critical</span></td><td>$185M may be insufficient; need third-party cost estimate</td></tr>
+                    <tr><td>2</td><td>Bankruptcy claim analysis & timeline</td><td><span class="badge badge-red">Critical</span></td><td>Unsecured creditor claims still being negotiated</td></tr>
+                    <tr><td>3</td><td>Villa purchase contract enforceability</td><td><span class="badge badge-red">Critical</span></td><td>Post-bankruptcy contract validity needs legal review</td></tr>
+                    <tr><td>4</td><td>Ritz-Carlton management agreement terms</td><td><span class="badge badge-orange">High</span></td><td>Fee structure not disclosed; impacts NOI significantly</td></tr>
+                    <tr><td>5</td><td>Appraisal & environmental reports</td><td><span class="badge badge-orange">High</span></td><td>Independent valuation needed for $500M buyout price</td></tr>
+                    <tr><td>6</td><td>Palmeraie entitlements & zoning</td><td><span class="badge badge-orange">High</span></td><td>$300M land value assumes development readiness</td></tr>
+                    <tr><td>7</td><td>Sponsor track record verification</td><td><span class="badge badge-blue">Medium</span></td><td>Point Ruston success needs independent verification</td></tr>
+                    <tr><td>8</td><td>Competitive supply analysis</td><td><span class="badge badge-blue">Medium</span></td><td>Scottsdale/PV luxury pipeline review needed</td></tr>
+                    <tr><td>9</td><td>Tax structure & entity formation</td><td><span class="badge badge-blue">Medium</span></td><td>No details on fund structure, fees, or promotes</td></tr>
+                    <tr><td>10</td><td>Insurance & title review</td><td><span class="badge badge-green">Standard</span></td><td>Standard diligence item</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Key Gaps in the Memo</h3>
+            <div class="grid-2" style="gap: 1rem;">
+                <div style="font-size: 0.85rem;">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No IRR projections or time-weighted returns</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No fund fee structure (management fee, promote, waterfall)</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No construction timeline or completion schedule</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No ramp-up period modeled (jumps to stabilized)</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No management fee / brand fee breakdown</li>
+                    </ul>
+                </div>
+                <div style="font-size: 0.85rem;">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No CapEx reserve or FF&E reserve budgeted</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No property tax, insurance, or ground lease detail</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; No market comp or competitive set analysis</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; 60.2% NOI margin is aggressive for full-service luxury</li>
+                        <li style="padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">&#x26A0; Palmeraie $300M valuation is entirely speculative</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPS -->
+    <section id="comps">
+        <h2 class="section-title">Market Comparables &amp; Benchmarks</h2>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Arizona Luxury Resort Competitive Set</h3>
+            <table>
+                <thead>
+                    <tr><th>Property</th><th class="text-center">Keys</th><th class="text-right">ADR</th><th class="text-right">Occ.</th><th class="text-right">RevPAR</th><th class="text-right">Est. Value/Key</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>The Phoenician (Luxury Collection)</td><td class="text-center">643</td><td class="text-right">$650-$800</td><td class="text-right">72%</td><td class="text-right">~$530</td><td class="text-right">~$750K</td></tr>
+                    <tr><td>Four Seasons Scottsdale</td><td class="text-center">210</td><td class="text-right">$900-$1,200</td><td class="text-right">68%</td><td class="text-right">~$700</td><td class="text-right">~$1.5M</td></tr>
+                    <tr><td>Andaz Scottsdale</td><td class="text-center">201</td><td class="text-right">$500-$700</td><td class="text-right">75%</td><td class="text-right">~$450</td><td class="text-right">~$600K</td></tr>
+                    <tr><td>Mountain Shadows Resort</td><td class="text-center">183</td><td class="text-right">$400-$600</td><td class="text-right">70%</td><td class="text-right">~$350</td><td class="text-right">~$500K</td></tr>
+                    <tr><td>Sanctuary Camelback</td><td class="text-center">109</td><td class="text-right">$700-$1,000</td><td class="text-right">65%</td><td class="text-right">~$550</td><td class="text-right">~$1.2M</td></tr>
+                    <tr class="highlight-row"><td>Ritz-Carlton PV (Projected)</td><td class="text-center">215</td><td class="text-right">$950</td><td class="text-right">70%</td><td class="text-right">$665</td><td class="text-right">$3.5M</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(239,83,80,0.08); border-radius: 4px; font-size: 0.8rem;">
+                <span class="badge badge-red">Flag</span> &nbsp; Projected value per key of $3.5M is 2-5x higher than comparable Arizona luxury resorts. This premium requires exceptional operating performance and/or a significant brand/newness premium to justify.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">NOI Margin Benchmarks</h3>
+            <div class="comparison-row"><div class="comp-label">Budget Hotels</div><div class="comp-bar-track"><div class="comp-bar-fill" style="width:35%; background:var(--text-muted);"></div></div><div class="comp-value">~35%</div></div>
+            <div class="comparison-row"><div class="comp-label">Full-Service</div><div class="comp-bar-track"><div class="comp-bar-fill" style="width:30%; background:var(--blue);"></div></div><div class="comp-value">~28-32%</div></div>
+            <div class="comparison-row"><div class="comp-label">Luxury Resort</div><div class="comp-bar-track"><div class="comp-bar-fill" style="width:38%; background:var(--purple);"></div></div><div class="comp-value">~32-40%</div></div>
+            <div class="comparison-row"><div class="comp-label">Ultra-Luxury</div><div class="comp-bar-track"><div class="comp-bar-fill" style="width:42%; background:var(--orange);"></div></div><div class="comp-value">~35-45%</div></div>
+            <div class="comparison-row"><div class="comp-label font-bold">Ritz PV (Memo)</div><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:var(--gold);"></div></div><div class="comp-value text-gold font-bold">60.2%</div></div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255,167,38,0.08); border-radius: 4px; font-size: 0.8rem;">
+                <span class="badge badge-orange">Caution</span> &nbsp; 60.2% NOI margin is significantly above industry benchmarks for luxury resorts. Typical Ritz-Carlton properties operate at 35-45% NOI margins. This suggests operating expenses may be understated by $13-22M, which would reduce NOI to $31-40M and hotel valuation to $443-$571M at a 7% cap rate.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--gold); margin-bottom: 1rem; font-weight: 400;">Recent Ultra-Luxury Hotel Transactions</h3>
+            <table>
+                <thead>
+                    <tr><th>Transaction</th><th class="text-center">Year</th><th class="text-right">Price</th><th class="text-center">Keys</th><th class="text-right">$/Key</th><th class="text-right">Cap Rate</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Montage Laguna Beach</td><td class="text-center">2023</td><td class="text-right">$650M</td><td class="text-center">252</td><td class="text-right">$2.58M</td><td class="text-right">~4.5%</td></tr>
+                    <tr><td>Ritz-Carlton Laguna Niguel</td><td class="text-center">2023</td><td class="text-right">$725M</td><td class="text-center">396</td><td class="text-right">$1.83M</td><td class="text-right">~5.0%</td></tr>
+                    <tr><td>Four Seasons Hualalai</td><td class="text-center">2022</td><td class="text-right">$700M+</td><td class="text-center">243</td><td class="text-right">$2.88M</td><td class="text-right">~4.5%</td></tr>
+                    <tr><td>Montage Healdsburg</td><td class="text-center">2022</td><td class="text-right">$265M</td><td class="text-center">130</td><td class="text-right">$2.04M</td><td class="text-right">~5.5%</td></tr>
+                    <tr class="highlight-row"><td>Ritz-Carlton PV (Implied)</td><td class="text-center">2026</td><td class="text-right">$757M</td><td class="text-center">215</td><td class="text-right">$3.52M</td><td class="text-right">7.0%</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(66,165,245,0.08); border-radius: 4px; font-size: 0.8rem;">
+                <span class="badge badge-blue">Analysis</span> &nbsp; The 7% cap rate used in the memo is actually conservative vs. recent ultra-luxury trades (4.5-5.5%). However, the high implied $/key ($3.52M) is at the top end of comps. If NOI margins are realistic, a tighter cap rate (5-6%) could yield significantly higher valuations ($883M-$1.06B). The disconnect may be the aggressive NOI assumption.
+            </div>
+        </div>
+    </section>
+
+    <div class="print-note">
+        Analysis prepared March 2026 &mdash; For discussion purposes only &mdash; Not investment advice<br>
+        Interactive tool built for The Kor Group / Proper Hospitality
+    </div>
+
+</div>
+
+<script>
+// ===== BASE CASE CONSTANTS =====
+const BASE = {
+    keys: 215,
+    adr: 950,
+    occ: 70,
+    cap: 7.0,
+    opex: 39.8,
+    fb: 24,
+    event: 12,
+    cost: 700,
+    villa: 300, // 120 + 180
+    estate: 110,
+    palm: 300,
+    rate: 5.5,
+    loan: 400
+};
+
+const SCENARIOS = {
+    bear: { adr: 750, occ: 55, cap: 8.0, opex: 45, fb: 18, event: 8, cost: 800, villa: 220, estate: 80, palm: 150, rate: 7.0, loan: 300 },
+    base: { ...BASE },
+    bull: { adr: 1200, occ: 80, cap: 5.5, opex: 36, fb: 32, event: 18, cost: 680, villa: 360, estate: 140, palm: 400, rate: 4.5, loan: 500 }
+};
+
+// ===== MODEL =====
+function getInputs() {
+    return {
+        adr: +document.getElementById('adr').value,
+        occ: +document.getElementById('occ').value,
+        cap: +document.getElementById('cap').value,
+        opex: +document.getElementById('opex').value,
+        fb: +document.getElementById('fb').value,
+        event: +document.getElementById('event').value,
+        cost: +document.getElementById('cost').value,
+        villa: +document.getElementById('villa').value,
+        estate: +document.getElementById('estate').value,
+        palm: +document.getElementById('palm').value,
+        rate: +document.getElementById('rate').value,
+        loan: +document.getElementById('loan').value
+    };
+}
+
+function compute(inp) {
+    const roomRev = inp.adr * (inp.occ / 100) * BASE.keys * 365 / 1e6;
+    const grossRev = roomRev + inp.fb + inp.event;
+    const opexAmt = grossRev * (inp.opex / 100);
+    const noi = grossRev - opexAmt;
+    const hotelVal = noi / (inp.cap / 100);
+    const totalReturn = inp.villa + inp.estate + hotelVal + inp.palm;
+    const equityMultiple = totalReturn / inp.cost;
+    const profit = totalReturn - inp.cost;
+    const yieldOnCost = (noi / inp.cost) * 100;
+    const revpar = inp.adr * (inp.occ / 100);
+    const noiMargin = (noi / grossRev) * 100;
+
+    // Debt metrics
+    const annualDebtService = inp.loan * ((inp.rate / 100) / 12) * Math.pow(1 + (inp.rate / 100) / 12, 360) / (Math.pow(1 + (inp.rate / 100) / 12, 360) - 1) * 12;
+    const dscr = noi / annualDebtService;
+    const debtYield = (noi / inp.loan) * 100;
+    const hotelEquity = hotelVal - inp.loan;
+    const cashReturned = inp.villa + inp.estate + inp.loan + (inp.palm * 0.5);
+    const leveredCashOnCash = ((noi - annualDebtService) / (inp.cost - inp.loan)) * 100;
+
+    return {
+        roomRev, grossRev, opexAmt, noi, hotelVal, totalReturn,
+        equityMultiple, profit, yieldOnCost, revpar, noiMargin,
+        annualDebtService, dscr, debtYield, hotelEquity,
+        cashReturned, leveredCashOnCash
+    };
+}
+
+// ===== DISPLAY UPDATE =====
+function fmt(n, dec = 1) { return n.toFixed(dec); }
+function fmtM(n) { return '$' + fmt(n) + 'M'; }
+
+function deltaClass(val, base) { return val >= base ? 'text-green' : 'text-red'; }
+function deltaStr(val, base) {
+    const d = val - base;
+    const sign = d >= 0 ? '+' : '';
+    return sign + fmt(d) + 'M';
+}
+
+function updateModel() {
+    const inp = getInputs();
+    const r = compute(inp);
+    const b = compute(BASE);
+
+    // Update labels
+    document.getElementById('adr-val').textContent = '$' + inp.adr;
+    document.getElementById('occ-val').textContent = inp.occ + '%';
+    document.getElementById('cap-val').textContent = fmt(inp.cap) + '%';
+    document.getElementById('opex-val').textContent = fmt(inp.opex) + '%';
+    document.getElementById('fb-val').textContent = '$' + inp.fb + 'M';
+    document.getElementById('event-val').textContent = '$' + inp.event + 'M';
+    document.getElementById('cost-val').textContent = '$' + inp.cost + 'M';
+    document.getElementById('villa-val').textContent = '$' + inp.villa + 'M';
+    document.getElementById('estate-val').textContent = '$' + inp.estate + 'M';
+    document.getElementById('palm-val').textContent = '$' + inp.palm + 'M';
+    document.getElementById('rate-val').textContent = fmt(inp.rate, 2) + '%';
+    document.getElementById('loan-val').textContent = '$' + inp.loan + 'M';
+
+    // Results grid
+    const grid = document.getElementById('results-grid');
+    grid.innerHTML = `
+        <div class="result-card">
+            <div class="result-label">Gross Revenue</div>
+            <div class="result-value text-blue">${fmtM(r.grossRev)}</div>
+            <div class="result-delta ${deltaClass(r.grossRev, b.grossRev)}">${deltaStr(r.grossRev, b.grossRev)} vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">NOI</div>
+            <div class="result-value" style="color: ${r.noi >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtM(r.noi)}</div>
+            <div class="result-delta ${deltaClass(r.noi, b.noi)}">${deltaStr(r.noi, b.noi)} vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">NOI Margin</div>
+            <div class="result-value text-gold">${fmt(r.noiMargin)}%</div>
+            <div class="result-delta ${r.noiMargin >= b.noiMargin ? 'text-green' : 'text-red'}">${(r.noiMargin - b.noiMargin >= 0 ? '+' : '') + fmt(r.noiMargin - b.noiMargin)}pp</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Hotel Valuation</div>
+            <div class="result-value text-gold">${fmtM(r.hotelVal)}</div>
+            <div class="result-delta ${deltaClass(r.hotelVal, b.hotelVal)}">${deltaStr(r.hotelVal, b.hotelVal)} vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Total Return</div>
+            <div class="result-value" style="color: ${r.totalReturn >= inp.cost ? 'var(--green)' : 'var(--red)'}">${fmtM(r.totalReturn)}</div>
+            <div class="result-delta ${deltaClass(r.totalReturn, b.totalReturn)}">${deltaStr(r.totalReturn, b.totalReturn)} vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Equity Multiple</div>
+            <div class="result-value" style="color: ${r.equityMultiple >= 1 ? 'var(--green)' : 'var(--red)'}">${fmt(r.equityMultiple, 2)}x</div>
+            <div class="result-delta ${r.equityMultiple >= b.equityMultiple ? 'text-green' : 'text-red'}">${(r.equityMultiple - b.equityMultiple >= 0 ? '+' : '') + fmt(r.equityMultiple - b.equityMultiple, 2)}x vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Yield on Cost</div>
+            <div class="result-value text-gold">${fmt(r.yieldOnCost)}%</div>
+            <div class="result-delta ${r.yieldOnCost >= b.yieldOnCost ? 'text-green' : 'text-red'}">${(r.yieldOnCost - b.yieldOnCost >= 0 ? '+' : '') + fmt(r.yieldOnCost - b.yieldOnCost)}pp</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">DSCR</div>
+            <div class="result-value" style="color: ${r.dscr >= 1.25 ? 'var(--green)' : 'var(--red)'}">${fmt(r.dscr, 2)}x</div>
+            <div class="result-delta text-muted">Min 1.25x required</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Debt Yield</div>
+            <div class="result-value text-gold">${fmt(r.debtYield)}%</div>
+            <div class="result-delta text-muted">Min 10% typical</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">RevPAR</div>
+            <div class="result-value text-blue">$${fmt(r.revpar, 0)}</div>
+            <div class="result-delta ${r.revpar >= b.revpar ? 'text-green' : 'text-red'}">$${fmt(r.revpar - b.revpar, 0)} vs base</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Value per Key</div>
+            <div class="result-value text-gold">$${fmt(r.hotelVal / BASE.keys, 1)}M</div>
+            <div class="result-delta text-muted">${BASE.keys} keys</div>
+        </div>
+        <div class="result-card">
+            <div class="result-label">Profit / (Loss)</div>
+            <div class="result-value" style="color: ${r.profit >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtM(r.profit)}</div>
+            <div class="result-delta ${r.profit >= 0 ? 'text-green' : 'text-red'}">${r.profit >= 0 ? 'Positive' : 'LOSS'}</div>
+        </div>
+    `;
+
+    updateCharts(inp, r);
+    updateMatrices(inp);
+}
+
+// ===== CHARTS =====
+let sensitivityChart, waterfallDynamic, yieldsChart, revenueChart, returnSourcesChart, waterfallStatic;
+
+function initCharts() {
+    const chartDefaults = {
+        color: '#9999AA',
+        borderColor: 'rgba(197,165,114,0.2)',
+    };
+    Chart.defaults.color = chartDefaults.color;
+    Chart.defaults.borderColor = chartDefaults.borderColor;
+
+    // Revenue donut
+    revenueChart = new Chart(document.getElementById('revenueChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Room Revenue', 'F&B Revenue', 'Event Revenue'],
+            datasets: [{
+                data: [52, 24, 12],
+                backgroundColor: ['#C5A572', '#42A5F5', '#AB47BC'],
+                borderWidth: 0
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Return sources donut
+    returnSourcesChart = new Chart(document.getElementById('returnSourcesChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Villa Cash on Hand', 'Villa Sales', 'Estate Lots', 'Hotel Value', 'Palmeraie'],
+            datasets: [{
+                data: [120, 180, 110, 757, 300],
+                backgroundColor: ['#4CAF50', '#66BB6A', '#FFA726', '#C5A572', '#42A5F5'],
+                borderWidth: 0
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Static waterfall
+    waterfallStatic = new Chart(document.getElementById('waterfallCanvas'), {
+        type: 'bar',
+        data: {
+            labels: ['Investment', 'Villa Cash', 'Villa Sales', 'Estate Lots', 'Hotel Debt', 'Hotel Equity', 'Palmeraie', 'Total Return'],
+            datasets: [{
+                label: 'Invisible',
+                data: [0, 0, 120, 300, 410, 810, 1167, 0],
+                backgroundColor: 'transparent',
+                borderWidth: 0
+            }, {
+                label: 'Amount',
+                data: [700, 120, 180, 110, 400, 357, 300, 1467],
+                backgroundColor: ['#EF5350', '#4CAF50', '#4CAF50', '#FFA726', '#42A5F5', '#C5A572', '#AB47BC', '#C5A572'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => ctx.datasetIndex === 1 ? '$' + ctx.raw + 'M' : ''
+                    }
+                }
+            },
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true, ticks: { callback: v => '$' + v + 'M' } }
+            }
+        }
+    });
+
+    // Sensitivity bar chart
+    sensitivityChart = new Chart(document.getElementById('sensitivityChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Gross Revenue', 'OpEx', 'NOI', 'Hotel Valuation'],
+            datasets: [
+                { label: 'Base Case', data: [88, 35, 53, 757.1], backgroundColor: 'rgba(66,165,245,0.6)' },
+                { label: 'Current', data: [88, 35, 53, 757.1], backgroundColor: 'rgba(197,165,114,0.8)' }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { ticks: { callback: v => '$' + v + 'M' } } }
+        }
+    });
+
+    // Waterfall dynamic
+    waterfallDynamic = new Chart(document.getElementById('waterfallDynamic'), {
+        type: 'bar',
+        data: {
+            labels: ['Villas', 'Estates', 'Hotel Value', 'Palmeraie', 'Total', 'Cost', 'Profit'],
+            datasets: [{
+                label: 'Amount ($M)',
+                data: [300, 110, 757, 300, 1467, 700, 767],
+                backgroundColor: ['#4CAF50', '#FFA726', '#C5A572', '#AB47BC', '#42A5F5', '#EF5350', '#4CAF50']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { ticks: { callback: v => '$' + v + 'M' } } }
+        }
+    });
+
+    // Yields chart
+    yieldsChart = new Chart(document.getElementById('yieldsChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Yield on Cost', 'Cap Rate', 'Debt Yield', 'NOI Margin (%/10)', 'DSCR (x10)', 'Eq. Multiple (x10)'],
+            datasets: [
+                { label: 'Base', data: [7.6, 7.0, 13.3, 6.02, 19.3, 21.0], borderColor: '#42A5F5', backgroundColor: 'rgba(66,165,245,0.1)', pointBackgroundColor: '#42A5F5' },
+                { label: 'Current', data: [7.6, 7.0, 13.3, 6.02, 19.3, 21.0], borderColor: '#C5A572', backgroundColor: 'rgba(197,165,114,0.1)', pointBackgroundColor: '#C5A572' }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: { r: { beginAtZero: true, grid: { color: 'rgba(197,165,114,0.1)' } } }
+        }
+    });
+}
+
+function updateCharts(inp, r) {
+    const b = compute(BASE);
+
+    // Sensitivity bar
+    sensitivityChart.data.datasets[1].data = [
+        +fmt(r.grossRev), +fmt(r.opexAmt), +fmt(r.noi), +fmt(r.hotelVal)
+    ];
+    sensitivityChart.update();
+
+    // Dynamic waterfall
+    waterfallDynamic.data.datasets[0].data = [
+        +fmt(inp.villa), +fmt(inp.estate), +fmt(r.hotelVal), +fmt(inp.palm),
+        +fmt(r.totalReturn), +fmt(inp.cost), +fmt(r.profit)
+    ];
+    waterfallDynamic.data.datasets[0].backgroundColor[6] = r.profit >= 0 ? '#4CAF50' : '#EF5350';
+    waterfallDynamic.update();
+
+    // Yields radar
+    yieldsChart.data.datasets[1].data = [
+        +fmt(r.yieldOnCost), +fmt(inp.cap), +fmt(r.debtYield),
+        +fmt(r.noiMargin / 10), +fmt(r.dscr * 10), +fmt(r.equityMultiple * 10)
+    ];
+    yieldsChart.update();
+}
+
+// ===== MATRICES =====
+function updateMatrices(inp) {
+    document.getElementById('matrix-cap').textContent = fmt(inp.cap) + '%';
+
+    // ADR vs Occupancy matrix
+    const adrs = [700, 800, 900, 950, 1000, 1100, 1200];
+    const occs = [50, 55, 60, 65, 70, 75, 80, 85];
+    let html = '<thead><tr><th>ADR \\ Occ</th>';
+    occs.forEach(o => html += `<th class="text-center">${o}%</th>`);
+    html += '</tr></thead><tbody>';
+    adrs.forEach(a => {
+        html += `<tr><td class="font-bold">$${a}</td>`;
+        occs.forEach(o => {
+            const roomR = a * (o/100) * BASE.keys * 365 / 1e6;
+            const gr = roomR + inp.fb + inp.event;
+            const n = gr * (1 - inp.opex/100);
+            const v = n / (inp.cap/100);
+            const isBase = a === 950 && o === 70;
+            const cls = isBase ? 'highlight-cell' : (v >= inp.cost ? '' : 'text-red');
+            html += `<td class="text-center ${cls}">$${fmt(v, 0)}M</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody>';
+    document.getElementById('adr-occ-matrix').innerHTML = html;
+
+    // Cap vs NOI matrix
+    const caps = [4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0];
+    const nois = [30, 35, 40, 45, 50, 53, 55, 60, 65, 70, 75];
+    html = '<thead><tr><th>Cap \\ NOI</th>';
+    nois.forEach(n => html += `<th class="text-center">$${n}M</th>`);
+    html += '</tr></thead><tbody>';
+    caps.forEach(c => {
+        html += `<tr><td class="font-bold">${fmt(c)}%</td>`;
+        nois.forEach(n => {
+            const v = n / (c/100);
+            const isBase = c === 7.0 && n === 53;
+            const cls = isBase ? 'highlight-cell' : (v >= inp.cost ? '' : 'text-red');
+            html += `<td class="text-center ${cls}">$${fmt(v, 0)}M</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody>';
+    document.getElementById('cap-noi-matrix').innerHTML = html;
+
+    // Cost vs Return matrix
+    const costs = [600, 650, 700, 750, 800, 850, 900];
+    const returns = [800, 900, 1000, 1100, 1200, 1300, 1467, 1600, 1800, 2000];
+    html = '<thead><tr><th>Cost \\ Return</th>';
+    returns.forEach(r => html += `<th class="text-center">$${r}M</th>`);
+    html += '</tr></thead><tbody>';
+    costs.forEach(c => {
+        html += `<tr><td class="font-bold">$${c}M</td>`;
+        returns.forEach(r => {
+            const m = r / c;
+            const isBase = c === 700 && r === 1467;
+            const cls = isBase ? 'highlight-cell' : (m >= 2.0 ? 'text-green' : m >= 1.0 ? '' : 'text-red');
+            html += `<td class="text-center ${cls}">${fmt(m, 2)}x</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody>';
+    document.getElementById('cost-return-matrix').innerHTML = html;
+}
+
+// ===== SCENARIOS =====
+function setScenario(name) {
+    const s = SCENARIOS[name];
+    const ids = ['adr','occ','cap','opex','fb','event','cost','villa','estate','palm','rate','loan'];
+    ids.forEach(id => {
+        document.getElementById(id).value = s[id] !== undefined ? s[id] : BASE[id];
+    });
+
+    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+    const btnMap = { bear: 0, base: 1, bull: 2 };
+    document.querySelectorAll('.scenario-btn')[btnMap[name]]?.classList.add('active');
+
+    updateModel();
+}
+
+// ===== NAV =====
+document.querySelectorAll('.nav a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelectorAll('.nav a').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Highlight nav on scroll
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section');
+    let current = '';
+    sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    document.querySelectorAll('.nav a').forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+    });
+});
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+    initCharts();
+    updateModel();
+});
+</script>
+
+</body>
+</html>
